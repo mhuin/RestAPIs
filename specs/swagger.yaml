@@ -137,7 +137,7 @@ paths:
         required: true
         type: "integer"
       responses:
-        204:
+        201:
           description: "SSH key added"
         400:
           description: "bad input parameter"
