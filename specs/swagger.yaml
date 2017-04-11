@@ -1,0 +1,182 @@
+---
+swagger: "2.0"
+info:
+  description: "ManageSF API acting as a gateway API for Software Factory"
+  version: "2.0"
+  title: "ManageSF Nodes API"
+  contact:
+    email: "softwarefactory-dev@redhat.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "managesf.sftests.com"
+basePath: "/v2.0/nodes"
+schemes:
+- "https"
+paths:
+  /:
+    get:
+      summary: "list nodes"
+      description: "Lists nodes currently managed by Nodepool\n"
+      operationId: "listNodes"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "skip"
+        in: "query"
+        description: "number of records to skip for pagination"
+        required: false
+        type: "integer"
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "maximum number of records to return"
+        required: false
+        type: "integer"
+        maximum: 50
+        minimum: 0
+        format: "int32"
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/NodeItem"
+        400:
+          description: "bad input parameter"
+        401:
+          description: "forbidden action"
+        404:
+          description: "No result found"
+  /{id}:
+    get:
+      summary: "get a single node"
+      description: "Get one node from its id\n"
+      operationId: "getNode"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "the node id"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "Node id found"
+          schema:
+            $ref: "#/definitions/NodeItem"
+        400:
+          description: "bad input parameter"
+        401:
+          description: "forbidden action"
+        404:
+          description: "No result found"
+    put:
+      summary: "put a node on hold"
+      description: "Get one node from its id\n"
+      operationId: "putNode"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "the node id"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "Node on hold"
+          schema:
+            $ref: "#/definitions/NodeItem"
+        400:
+          description: "bad input parameter"
+        401:
+          description: "forbidden action"
+        404:
+          description: "No result found"
+    delete:
+      summary: "delete a node"
+      description: "Delete a node by id\n"
+      operationId: "deleteNode"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "the build id"
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: "Node is being deleted"
+          schema:
+            $ref: "#/definitions/NodeItem"
+        400:
+          description: "bad input parameter"
+        401:
+          description: "forbidden action"
+        404:
+          description: "No result found"
+  /{id}/authorize_key:
+    post:
+      summary: "inject an SSH key on a node"
+      description: "Add an SSH private key under the default user on node identified\
+        \ by id\n"
+      operationId: "addAuthorizedKeyNode"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "the build id"
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: "SSH key added"
+        400:
+          description: "bad input parameter"
+        401:
+          description: "forbidden action"
+definitions:
+  NodeItem:
+    properties:
+      node_name:
+        type: "string"
+        example: "bare-centos-7-rcip-dev-134475"
+      target:
+        type: "string"
+        example: "default"
+      state:
+        type: "string"
+        example: "used"
+      age:
+        type: "integer"
+        format: "int32"
+        example: 456
+      ip:
+        type: "string"
+        example: "bare-centos-7-rcip-dev-134475"
+      hostname:
+        type: "string"
+        example: "bare-centos-7-rcip-dev-134475"
+      server_id:
+        type: "string"
+        example: "abcd-1234-fdcb"
+      label:
+        type: "string"
+        example: "bare-centos-7"
+      manager:
+        type: "string"
+        example: "None"
+      provider_name:
+        type: "string"
+        example: "rcip-dev"
+      AZ:
+        type: "string"
+        example: "None"
